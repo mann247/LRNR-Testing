@@ -1,8 +1,96 @@
+.homepg {
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.homepg h3 {
+    font-weight: normal;
+}
+.applogo {
+    width: 60%; 
+    height: auto;
+    margin: 2rem;
+}
+.info-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    margin: 2rem;
+}
+.btn {
+    color: white;
+    background-color: var(--green-color);
+    margin: 2rem;
+   
+    padding: 15px;
+    border: 0;
+
+}
+.quiz,
+.reward,
+.sme {
+    line-height: 2; 
+    margin: 1rem;
+}
+
 /*-------------------- Media Queries --------------------*/
 /* For tablet */
 @media screen and (min-width: 768px) {
+        .applogo {
+        width: 30%;
+    }
+    .info-section {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: stretch;
+        flex: 1;
+        gap: 1.5rem;
+        margin: 2rem auto;
+    }
+  
+    
+    .btn {
+        margin: 1.5rem;
+    }
+    .quiz,
+    .reward, 
+    .sme {
+        max-width: 280px;
+        line-height: 1.4;  
+        margin-top: 1.5rem;
+        width: 100%
+    }
+
+    .social{
+        margin-bottom: 1.5rem;
+    }
+    .txt {
+        text-align: start;
+        margin-top: 1rem;
+        
+    }
 }
+
 
 /* For large devices */
 @media screen and (min-width: 1024px) {
+    .applogo {
+        width: 30%;
+    }
+    .info-section {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: stretch;
+        gap: 2rem;
+    }
+    .quiz,
+    .reward, 
+    .sme {
+        max-width: 30%;
+    }
 }
