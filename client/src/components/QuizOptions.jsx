@@ -1,8 +1,26 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import {useQuiz} from '../context/QuizContext.jsx'
 import '../styles/QuizOptions.css';
 import '../components/Button.jsx'
 
 export default function QuizOptions() {
+    const { startQuiz, isLoading } = useQuiz(); 
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        
+        // Collect form data
+        const formData = {
+            topic: event.target.topic.value,
+            expertise: event.target.expertise.value,
+            numQuestions: event.target['num-questions'].value,
+            style: event.target['style-questions'].value,
+        };
+
+        // Pass the options to the context to simulate starting the quiz
+        startQuiz(formData);
+    };
     return(
        <div className="main-content">
 

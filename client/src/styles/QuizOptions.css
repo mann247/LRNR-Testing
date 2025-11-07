@@ -43,12 +43,6 @@ h2 {
     padding: 8px 0;
     border: none;
     background: transparent;
-    
-    /* Attempt to remove browser default arrow appearance */
-    -webkit-appearance: none; 
-    -moz-appearance: none;
-    appearance: none; 
-    
     font-size: 1em;
     color: #333; 
     cursor: pointer;
