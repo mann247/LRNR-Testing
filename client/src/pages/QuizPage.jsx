@@ -1,7 +1,7 @@
 // QuizPage.jsx
 
 import React, { useState, useEffect } from 'react';
-import { useQuiz } from './QuizContext'; 
+import { useQuiz } from '../context/QuizContext.jsx';  
 import '../styles/QuizPage.css';
 import Button from '../components/Button.jsx'; 
 
