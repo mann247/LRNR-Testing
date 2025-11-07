@@ -12,7 +12,7 @@ export default function Home() {
         <div className='homepg'>
           <img className='applogo' src={applogo} alt="logo" />
           <h3>Your guided path to programming enlightenment</h3>
-          <Link to='/Quiz'>
+          <Link to='/quiz'>
           <button className='btn'>Begin Journey</button>
           </Link>
           <div className='info-section'>

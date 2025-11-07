@@ -1,9 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useQuiz } from './QuizContext'; 
+import { useQuiz } from '../context/QuizContext.jsx'; 
 import applogo from '../../public/lrnr-logo.png'
 import Button from '../components/Button.jsx'; 
 import '../styles/Results.css';
+
 
 export default function Quiz() {
 

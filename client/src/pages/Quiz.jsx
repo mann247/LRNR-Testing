@@ -1,5 +1,5 @@
 import React from 'react';
-import '../components/QuizOptions';
+import '../components/QuizOptions.jsx';
 import '../styles/Quiz.css';
 
 export default function Quiz() {
