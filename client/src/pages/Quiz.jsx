@@ -30,7 +30,7 @@ export default function Quiz() {
 
         try {
             // Evaluate the current answer
-            const response = await fetch('http://localhost:5000/api/evaluate', {
+            const response = await fetch('/api/evaluate', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
