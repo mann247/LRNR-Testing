@@ -1,8 +1,8 @@
 import React from 'react';
 import '../styles/Account.css';
-import fireIcon from '../../public/fire.svg';
-import listIcon from '../../public/list.svg';
-import accountIcon from '../../public/person.svg';
+import fireIcon from '/fire.svg';
+import listIcon from '/list.svg';
+import accountIcon from '/person.svg';
 
 export default function Account() {
     return (
