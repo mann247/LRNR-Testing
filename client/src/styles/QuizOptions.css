@@ -1,1 +1,54 @@
 /* Quiz options CSS */
+/* Quiz options CSS */
+.main-content {
+    max-width: 600px; 
+    margin: 50px auto; 
+    padding: 20px;
+}
+
+/* h2 {
+    margin-bottom: 5px;
+} */
+
+.main-content p {
+    margin-bottom: 25px;
+    color: #555;
+}
+
+/* Form Container */
+.quiz-form {
+    padding: 20px 0;
+}
+
+/* --- Field Styling (Dropdowns) --- */
+
+/* Styling for each individual field container (Label + Dropdown) */
+.form-field {
+    margin-bottom: 30px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #ccc; 
+}
+
+/* Styling the Labels (Topic, Expertise, etc.) */
+.form-field label {
+    display: block;
+    font-size: 0.85em; 
+    color: #667; 
+    margin-bottom: 5px;
+    text-transform: uppercase;
+}
+
+/* Styling the Dropdown Select boxes */
+.dropdown {
+    width: 100%; 
+    padding: 8px 0;
+    border: none;
+    background: transparent;
+    font-size: 1em;
+    color: #333; 
+    cursor: pointer;
+}
+
+.dropdown option {
+    color: #333;
+}
