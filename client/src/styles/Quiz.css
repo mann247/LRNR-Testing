@@ -1,0 +1,122 @@
+.quiz-container,
+.quiz-question-container {
+    margin: 0 1rem;
+    background-color: white;
+    padding: 40px;
+}
+
+.title-div {
+    margin-bottom: 30px;
+}
+
+.title-div h1 {
+    font-size: 36px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.title-div p {
+    color: #666;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+/* Quiz Question Styles */
+.question-counter {
+    text-align: center;
+    margin-bottom: 2.25rem;
+}
+
+.question-counter h2 {
+    color: var(--green-color);
+    font-size: 3rem;
+}
+
+.question-section {
+    margin-bottom: 4rem;
+}
+
+.question-section h3 {
+    color: var(--green-color);
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.question-section p {
+    font-size: 1.1rem;
+    color: var(--text-color);
+}
+
+.answer-section h3 {
+    color: var(--green-color);
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.answer-input-wrapper {
+    position: relative;
+    margin-bottom: 2rem;
+}
+
+.answer-input {
+    width: 100%;
+    padding: 12px 40px 12px 12px;
+    border: none;
+    border-bottom: 2px solid var(--green-color);
+    font-size: 1rem;
+    outline: none;
+    background-color: transparent;
+}
+
+/* Verner's Evaluation Section */
+.evaluation-section {
+    margin-top: 2.5rem;
+    padding-top: 2.5rem;
+}
+
+.evaluation-section h3 {
+    color: var(--green-color);
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.evaluation-content {
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.evaluation-result {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.evaluation-result.correct {
+    color: #4caf50;
+}
+
+.evaluation-result.incorrect {
+    color: #f44336;
+}
+
+.evaluation-feedback {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333;
+    margin: 0;
+}
+
+/*-------------------- Media Queries --------------------*/
+/* For tablet */
+@media screen and (min-width: 768px) {
+}
+
+/* For large devices */
+@media screen and (min-width: 1024px) {
+    .evaluation-content {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 1.5rem 3rem;
+    }
+}
