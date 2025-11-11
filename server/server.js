@@ -2,8 +2,11 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import OpenAI from 'openai';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.join(__dirname, '.env') });
 
 const app = express();
@@ -13,105 +16,159 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 app.use(express.json());
 app.use(
     cors({
-        origin: 'http://localhost:5173', // Remember to update once hosted
-        methods: ['POST', 'GET'],
+        origin: 'http://localhost:5173',
     })
 );
 
+// Generate questions endpoint
 app.post('/api/questions', async (req, res) => {
-    const { topic, expertise, numQuestions, style } = req.body;
-
-    const prompt = `
-  You are a quiz generator.
-  Generate ${numQuestions} questions about "${topic}" 
-  at a(n) "${expertise}" level in the style of "${style}".
-  Return strictly in JSON format:
-  {
-    "questions": [
-      { "id": 1, "question": "..." },
-      ...
-    ]
-  }
-  Do not include answers.
-  `;
-
     try {
-        const completion = await openai.chat.completions.create({
-            model: 'gpt-4o-mini',
-            messages: [{ role: 'user', content: prompt }],
-        });
+        const { topic, expertise, numberOfQuestions, style } = req.body;
 
-        const content = completion.choices[0].message.content.trim();
-
-        // Try parsing the AI response
-        let data;
-        try {
-            const jsonStr = content.slice(
-                content.indexOf('{'),
-                content.lastIndexOf('}') + 1
-            );
-            data = JSON.parse(jsonStr);
-        } catch (err) {
-            console.error('JSON Parse Error:', err);
+        if (!topic || !expertise) {
             return res
-                .status(500)
-                .json({ error: 'Invalid response format from OpenAI' });
+                .status(400)
+                .json({ error: 'Topic and expertise are required' });
         }
 
-        res.json(data);
-    } catch (err) {
-        console.error('OpenAI Error:', err);
-        res.status(500).json({ error: 'Failed to generate quiz questions' });
+        // Create a prompt for OpenAI to generate questions
+        const prompt = `Generate ${numberOfQuestions} ${style} quiz questions about ${topic} for a ${expertise} level learner. 
+        
+        Return ONLY a JSON array of question strings. Do not include any explanations, numbering, or additional text.
+        
+        Example format:
+        ["Question 1 text here?", "Question 2 text here?", "Question 3 text here?"]
+        
+        Make sure questions are clear, specific, and appropriate for the ${expertise} expertise level.`;
+
+        const completion = await openai.chat.completions.create({
+            model: 'gpt-3.5-turbo',
+            messages: [
+                {
+                    role: 'system',
+                    content:
+                        'You are a quiz generator that creates educational questions. Always respond with valid JSON arrays of questions only.',
+                },
+                {
+                    role: 'user',
+                    content: prompt,
+                },
+            ],
+            temperature: 0.7,
+            max_tokens: 1000,
+        });
+
+        const responseText = completion.choices[0].message.content.trim();
+
+        // Parse the JSON response
+        let questions;
+        try {
+            // Remove markdown code blocks if present
+            const cleanedResponse = responseText.replace(
+                /```json\n?|\n?```/g,
+                ''
+            );
+            questions = JSON.parse(cleanedResponse);
+        } catch (parseError) {
+            console.error('Failed to parse OpenAI response:', responseText);
+            return res.status(500).json({
+                error: 'Failed to parse questions from AI response',
+                details: responseText,
+            });
+        }
+
+        if (!Array.isArray(questions)) {
+            return res
+                .status(500)
+                .json({ error: 'Invalid response format from AI' });
+        }
+
+        res.json({ questions });
+    } catch (error) {
+        console.error('Error generating questions:', error);
+        res.status(500).json({
+            error: 'Failed to generate questions',
+            details: error.message,
+        });
     }
 });
 
+// Evaluate answers endpoint
 app.post('/api/evaluate', async (req, res) => {
-    const { question, answer } = req.body;
-
-    const evalPrompt = `
-  You are a quiz evaluator.
-  Grade how well the user's answer addresses the question.
-  Be flexible and understanding, focusing on intent rather than strict phrasing.
-  Respond strictly in this JSON format:
-  {
-    "correct": true/false,
-    "feedback": "Your feedback here",
-    "percent": number (0-100)
-  }
-  
-  Question: ${question}
-  User Answer: ${answer}
-  `;
-
     try {
-        const completion = await openai.chat.completions.create({
-            model: 'gpt-4o-mini',
-            messages: [{ role: 'user', content: evalPrompt }],
-        });
+        const { answers } = req.body;
 
-        const content = completion.choices[0].message.content.trim();
-
-        let result;
-        try {
-            const jsonStr = content.slice(
-                content.indexOf('{'),
-                content.lastIndexOf('}') + 1
-            );
-            result = JSON.parse(jsonStr);
-        } catch (err) {
-            console.error('JSON Parse Error:', err);
-            return res
-                .status(500)
-                .json({ error: 'Invalid response format from OpenAI' });
+        if (!answers || !Array.isArray(answers)) {
+            return res.status(400).json({ error: 'Answers array is required' });
         }
 
-        res.json(result);
-    } catch (err) {
-        console.error('Evaluation Error:', err);
-        res.status(500).json({ error: 'Failed to evaluate answer' });
+        // Create evaluation prompt
+        const evaluationPrompt = `Evaluate the following quiz answers and determine how many are correct. 
+        Be lenient with minor spelling errors or slight variations in wording, but the core answer must be correct.
+        
+        ${answers
+            .map(
+                (item, idx) => `
+        Question ${idx + 1}: ${item.question}
+        User's Answer: ${item.answer}
+        `
+            )
+            .join('\n')}
+        
+        Respond with ONLY a JSON object in this exact format:
+        {"score": X, "evaluations": [{"correct": true/false, "feedback": "brief feedback"}]}
+        
+        Where X is the number of correct answers.`;
+
+        const completion = await openai.chat.completions.create({
+            model: 'gpt-3.5-turbo',
+            messages: [
+                {
+                    role: 'system',
+                    content:
+                        'You are a quiz evaluator. Always respond with valid JSON only. Be fair but lenient with minor errors.',
+                },
+                {
+                    role: 'user',
+                    content: evaluationPrompt,
+                },
+            ],
+            temperature: 0.3,
+            max_tokens: 1500,
+        });
+
+        const responseText = completion.choices[0].message.content.trim();
+
+        // Parse the evaluation response
+        let evaluation;
+        try {
+            const cleanedResponse = responseText.replace(
+                /```json\n?|\n?```/g,
+                ''
+            );
+            evaluation = JSON.parse(cleanedResponse);
+        } catch (parseError) {
+            console.error('Failed to parse evaluation response:', responseText);
+            // Fallback: count answers generously
+            return res.json({
+                score: Math.floor(answers.length / 2),
+                evaluations: [],
+            });
+        }
+
+        res.json({
+            score: evaluation.score || 0,
+            evaluations: evaluation.evaluations || [],
+        });
+    } catch (error) {
+        console.error('Error evaluating answers:', error);
+        res.status(500).json({
+            error: 'Failed to evaluate answers',
+            details: error.message,
+        });
     }
 });
 
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Server is running on port ${PORT}`);
 });
