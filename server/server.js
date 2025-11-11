@@ -16,7 +16,7 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 app.use(express.json());
 app.use(
     cors({
-        origin: 'http://localhost:5173',
+        origin: 'https://lrnr-app-85pj.onrender.com/',
     })
 );
 
@@ -167,6 +167,12 @@ app.post('/api/evaluate', async (req, res) => {
             details: error.message,
         });
     }
+});
+
+app.use(express.static(path.join(__dirname, '../client/dist')));
+
+app.get(/.*/, (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/dist/index.html'));
 });
 
 app.listen(PORT, () => {
