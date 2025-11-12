@@ -30,16 +30,13 @@ export default function QuizOptions({ onQuizGenerated }) {
         setError(null);
 
         try {
-            const response = await fetch(
-                'http://localhost:5000/api/questions',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formData),
-                }
-            );
+            const response = await fetch('/api/questions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
 
             if (!response.ok) {
                 const errorData = await response.json();
