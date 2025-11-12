@@ -31,6 +31,8 @@
 
 .nav_list {
     display: flex;
+    gap: 1.5rem;
+    align-items: center;
 }
 
 .nav_link {
@@ -39,6 +41,7 @@
     font-size: 0.9rem;
     color: white;
     font-family: var(--font-text);
+    white-space: nowrap;
 }
 
 .nav_link:hover {
